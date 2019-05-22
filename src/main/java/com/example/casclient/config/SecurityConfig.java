@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ServiceProperties serviceProperties = new ServiceProperties();
         System.err.println("指定service相关信息" + casProperties.getAppServerUrl() + casProperties.getAppLoginUrl());
         serviceProperties.setService(casProperties.getAppServerUrl() + casProperties.getAppLoginUrl());
-//        serviceProperties.setAuthenticateAllArtifacts(true);//proxy票据模式时使用
+        serviceProperties.setAuthenticateAllArtifacts(true);//proxy票据模式时使用
 //        serviceProperties.setSendRenew(false);
         return serviceProperties;
     }
@@ -114,9 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         casAuthenticationFilter.setServiceProperties(serviceProperties());
         casAuthenticationFilter.setAuthenticationDetailsSource(detailsSource);
 //
-//        casAuthenticationFilter.setAuthenticationManager(authenticationManager());
-//        System.err.println("CAS认证过滤器" + casProperties.getAppLoginUrl());
-//        casAuthenticationFilter.setFilterProcessesUrl(casProperties.getAppLoginUrl());
+        casAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        System.err.println("CAS认证过滤器" + casProperties.getAppLoginUrl());
+        casAuthenticationFilter.setFilterProcessesUrl(casProperties.getAppLoginUrl());
         return casAuthenticationFilter;
     }
 
@@ -126,12 +126,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CasAuthenticationProvider casAuthenticationProvider() {
         CasAuthenticationProvider provider = new CasAuthenticationProvider();
-//        provider.setServiceProperties(serviceProperties());
-//        provider.setAuthenticationUserDetailsService(customUserDetailsService());
-        //casAuthenticationProvider.setUserDetailsService(customUserDetailsService()); //这里只是接口类型，实现的接口不一样，都可以的。
+        provider.setServiceProperties(serviceProperties());
+        provider.setAuthenticationUserDetailsService(customUserDetailsService());
+//        provider.setUserDetailsService(customUserDetailsService()); //这里只是接口类型，实现的接口不一样，都可以的。
         provider.setTicketValidator(cas20ProxyTicketValidator());
         provider.setStatelessTicketCache(ehCacheBasedTicketCache());
-//        provider.setKey("casProvider");
+        provider.setKey("casProvider");
         return provider;
     }
 
@@ -164,8 +164,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public EhCacheBasedTicketCache ehCacheBasedTicketCache(){
         EhCacheBasedTicketCache ticketCache = new EhCacheBasedTicketCache();
         Cache cache = new Cache("casTickets", 50, true, false, 3600, 900);
-        cache.initialise();
-        cache.dispose();
+//        cache.initialise();
+//        cache.dispose();
         ticketCache.setCache(cache);
         return ticketCache;
     }
